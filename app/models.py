@@ -11,6 +11,3 @@ class User(Base):
     hashed_pwd = Column(String, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
 
-    model_config = {
-        "orm_mode": True
-    }

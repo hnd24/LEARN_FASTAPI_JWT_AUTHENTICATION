@@ -1,20 +1,22 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Body
+from typing import Annotated
 from ..schemas import UserCreate, UserResponse, Token, TokenData, UserUpdate
 from ..models import User
 from ..database import get_db
 from sqlalchemy.orm import Session
-from ..core.security import hash_password, verify_password
+from ..core.security import get_current_active_user, hash_password, verify_password
 from ..constants import  ROLES
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"],
+    dependencies=[Depends(get_current_active_user)],
     responses={404: {"description": "Not found"}},
 )
 
 
 @router.get("/", response_model=list[UserResponse])
-async def read_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 10):
+async def read_users(db: Annotated[Session, Depends(get_db)], skip: int = 0, limit: int = 10):
     """Get all users"""
     print("🍀🍀🍀 User DB session:", db)
     print(f"🍀🍀🍀 User: {User}")
@@ -22,35 +24,16 @@ async def read_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 
     return users
 
 @router.get("/{user_id}", response_model=UserResponse)
-async def read_user(user_id: int, db: Session = Depends(get_db)):
+async def read_user(user_id: int, db: Annotated[Session, Depends(get_db)]):
     """Get user by ID"""
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    """Create a new user"""
-    db_user = db.query(User).filter(User.email == user.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    hashed_password = hash_password(user.password)
-
-    new_user = User(
-        name=user.name,
-        email=user.email,
-        role=user.role or "user",
-        hashed_pwd=hashed_password
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
 
 @router.patch("/{user_id}", response_model=UserResponse)
-async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
+async def update_user(user_id: int, user: Annotated[UserUpdate, Body()], db: Annotated[Session, Depends(get_db)]):
     db_user = db.get(User, user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
@@ -93,7 +76,7 @@ async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: int, db: Session = Depends(get_db)):
+async def delete_user(user_id: int, db: Annotated[Session, Depends(get_db)]):
     """Delete a user"""
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user is None:

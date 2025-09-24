@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from ..schemas import UserCreate, UserResponse, Token, TokenData, UserUpdate
-from ..model import User
+from ..models import User
 from ..database import get_db
 from sqlalchemy.orm import Session
 from ..core.security import hash_password, verify_password
-from ..constants import ROLE_ADMIN, ROLE_USER, ROLES
+from ..constants import  ROLES
 
 router = APIRouter(
     prefix="/users",
@@ -48,14 +48,6 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     return new_user
-
-from sqlalchemy.orm import Session
-from fastapi import HTTPException, Depends, status
-from app.database import get_db
-from app.models import User
-from app.schemas import UserUpdate, UserResponse
-from app.core.security import hash_password
-from app.constants import ROLES
 
 @router.patch("/{user_id}", response_model=UserResponse)
 async def update_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):

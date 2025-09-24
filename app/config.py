@@ -1,5 +1,7 @@
-# config.py
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 
 class Settings(BaseSettings):
     secret_key: str
@@ -8,7 +10,9 @@ class Settings(BaseSettings):
     database_url_postgresql: str | None = None
     database_url_sqlite: str | None = None
 
-    class Config:
-        env_file = ".env"   # chỉ định file .env
+    model_config = SettingsConfigDict(
+        env_file = str(ROOT / ".env"),
+        env_file_encoding = "utf-8",
+    )
 
 settings = Settings()

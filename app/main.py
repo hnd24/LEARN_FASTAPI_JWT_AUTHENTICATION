@@ -7,7 +7,7 @@ from sqlalchemy import Boolean, create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from contextlib import asynccontextmanager
-from .config import settings
+from .core.config import settings
 from .routes import user
 from .database import init_db, dispose_engine
 from .routes import user as user_routes

@@ -10,3 +10,7 @@ class User(Base):
     role = Column(String, nullable=False, default="user")
     hashed_pwd = Column(String, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
+
+    model_config = {
+        "orm_mode": True
+    }

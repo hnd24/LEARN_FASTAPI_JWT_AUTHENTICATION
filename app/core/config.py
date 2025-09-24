@@ -11,8 +11,9 @@ class Settings(BaseSettings):
     database_url_sqlite: str | None = None
 
     model_config = SettingsConfigDict(
-        env_file = str(ROOT / ".env"),
-        env_file_encoding = "utf-8",
+        env_file=".env",               # << chỉ cần vậy
+        env_file_encoding="utf-8",
+        extra="ignore",
     )
 
 settings = Settings()

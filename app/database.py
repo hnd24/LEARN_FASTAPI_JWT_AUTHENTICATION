@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from typing import Generator
-from .config import settings
+from .core.config import settings
 
 # Engine (SQLite cần check_same_thread=False)
 engine = create_engine(

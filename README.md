@@ -31,16 +31,20 @@ Enjoy learning and building secure APIs! 🔒✨
     fastapi dev app/main.py
     ```
 
-3. **🌐 Acess the API docs**
+3. **🌐 Prepare**
+
+    - Copy the `template.env` file to `.env` and fill in all required environment variables as instructed in the file.
+
+4. **🌐 Acess the API docs**
 
     - Open your browser and go to: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-4. **🔑 Test JWT Authentication**
+5. **🔑 Test JWT Authentication**
 
     - Use the `/login` endpoint to obtain a JWT token.
     - Authorize requests by clicking "Authorize" in the Swagger UI and pasting your token.
 
-5. **✅ Explore secured endpoints**
+6. **✅ Explore secured endpoints**
     - Try accessing protected routes to verify authentication.
 
 ---
